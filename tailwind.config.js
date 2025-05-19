@@ -9,7 +9,7 @@ export default {
     "./error.vue",
   ],
   theme: {
-    container : {
+    container: {
       center: true,
       padding: '24px',
       screens: {
@@ -18,22 +18,25 @@ export default {
     },
     extend: {
       colors: {
-        primary: "#007AFF",
-        secondary:"#14AE5C",
-        disabled: "#8C929C",
-        danger: {
-          DEFAULT: "#F9261A",
-          100: "#b3261e1c",
+        primary : {
+          DEFAULT: '#007AFF',
+          100: 'rgba(0, 122, 255, 0.15)'
         },
+        secondary: "#14AE5C",
+      disabled: "#8C929C",
+      danger: {
+        DEFAULT: "#F9261A",
+        100: "#b3261e1c",
       },
-      fontSize: {
-        lg: '22px',
-        md: "17px",
-        sm: "14px"
-      }
     },
+    fontSize: {
+      lg: '22px',
+      md: "17px",
+      sm: "14px"
+    }
   },
-  plugins: [
-  ],
+},
+plugins: [
+],
 }
 

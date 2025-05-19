@@ -1,5 +1,5 @@
 <template>
-  <div>
-    <h1>Welcome to the Home Page</h1>
+  <div class="py-4">
+    <TitleAndFilters/>
   </div>
 </template>
