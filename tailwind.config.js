@@ -9,6 +9,13 @@ export default {
     "./error.vue",
   ],
   theme: {
+    container : {
+      center: true,
+      padding: '24px',
+      screens: {
+        '2xl': '1440px',
+      },
+    },
     extend: {
       colors: {
         primary: "#007AFF",
