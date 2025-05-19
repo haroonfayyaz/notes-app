@@ -6,5 +6,5 @@
 
 body{
   font-family: 'Inter', sans-serif;
-  @apply bg-danger-100;
+  @apply bg-gray-100;
 }
