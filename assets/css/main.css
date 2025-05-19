@@ -4,7 +4,16 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
+body {
   font-family: 'Inter', sans-serif;
   @apply bg-gray-100;
+}
+.btn {
+  @apply py-[10px] px-5 rounded-full flex items-center gap-2 text-sm font-semibold text-white;
+}
+.btn-primary {
+  @apply bg-primary;
+}
+.btn-dark {
+  @apply bg-black
 }
