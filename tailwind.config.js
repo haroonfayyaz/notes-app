@@ -1,0 +1,32 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./components/**/*.{js,vue,ts}",
+    "./layouts/**/*.vue",
+    "./pages/**/*.vue",
+    "./plugins/**/*.{js,ts}",
+    "./app.vue",
+    "./error.vue",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: "#007AFF",
+        secondary:"#14AE5C",
+        disabled: "#8C929C",
+        danger: {
+          DEFAULT: "#F9261A",
+          100: "#b3261e1c",
+        },
+      },
+      fontSize: {
+        lg: '22px',
+        md: "17px",
+        sm: "14px"
+      }
+    },
+  },
+  plugins: [
+  ],
+}
+
