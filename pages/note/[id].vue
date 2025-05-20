@@ -8,12 +8,13 @@
     <div class="my-8 bg-white p-6 rounded-xl mx-auto">
       <div
         v-if="cart.type === 'image' && cart.profileImage"
-        class="mt-4 w-full"
+        class="w-full"
       >
         <img
-          :src="cart.profileImage"
+          v-if="imageSrc"
+          :src="imageSrc"
           alt="Cart Image"
-          class="rounded-2xl w-full aspect-[3/1.4] object-cover mb-8"
+          class="rounded-xl w-full aspect-[3/1.4] object-cover mb-8"
         />
       </div>
       <div v-if="cart">
@@ -45,6 +46,7 @@
 </template>
 
 <script setup>
+import { ref, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useCartStore } from "@/stores/cartStore";
 
@@ -53,5 +55,23 @@ const cartStore = useCartStore();
 
 const cartId = parseInt(route.params.id);
 const cart = cartStore.carts[cartId];
+
+const imageSrc = computed(() => {
+  if (!cart || !cart.profileImage) return null;
+
+  if (cart.profileImage instanceof File) {
+    return URL.createObjectURL(cart.profileImage);
+  }
+  return cart.profileImage;
+});
+
+watch(
+  () => cart?.profileImage,
+  (newImage, oldImage) => {
+    if (oldImage instanceof File) {
+      URL.revokeObjectURL(URL.createObjectURL(oldImage));
+    }
+  }
+);
 </script>
 

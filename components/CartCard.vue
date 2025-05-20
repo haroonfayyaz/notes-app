@@ -12,20 +12,16 @@
               class="min-w-5"
             />
           </router-link>
-          <button @click="showConfirm = true">
-            <img
-              src="/assets/media/trash.svg"
-              height="16"
-              width="16"
-              class="min-w-4"
-            />
+          <button @click="$emit('edit', index)">
+            EDIt
           </button>
         </div>
       </div>
 
       <div v-if="cart.type === 'image' && cart.profileImage" class="mt-2">
         <img
-          :src="cart.profileImage"
+          v-if="imageSrc"
+          :src="imageSrc"
           alt="Cart Image"
           class="w-full aspect-[3/1.8] object-cover rounded-xl mb-5"
         />
@@ -42,7 +38,10 @@
         {{ cart.description }}
       </p>
 
-      <ul v-if="cart.type === 'checkbox'" class="mt-2 list-none text-sm flex flex-col gap-3">
+      <ul
+        v-if="cart.type === 'checkbox'"
+        class="mt-2 list-none text-sm flex flex-col gap-3"
+      >
         <li
           v-for="(opt, idx) in cart.productOptions"
           :key="idx"
@@ -60,37 +59,31 @@
         </li>
       </ul>
     </div>
-
-    <!-- Confirmation Modal -->
-    <Modal :show="showConfirm" @close="showConfirm = false">
-      <template #title>Confirm Delete</template>
-      <p>Are you sure you want to delete this cart?</p>
-      <div class="mt-4 flex justify-end gap-3">
-        <button @click="showConfirm = false" class="btn btn-dark">
-          Cancel
-        </button>
-        <button @click="confirmDelete" class="btn btn-primary">Delete</button>
-      </div>
-    </Modal>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-
-const emit = defineEmits(["delete"]);
+import { ref, computed } from "vue";
 
 const props = defineProps({
   cart: Object,
   index: Number,
 });
 
-const showConfirm = ref(false);
+const emit = defineEmits(["edit"]);
 
-function confirmDelete() {
-  emit("delete", props.index);
-  showConfirm.value = false;
+const imageSrc = computed(() => {
+  if (props.cart?.type === "image" && props.cart.profileImage) {
+    if (typeof props.cart.profileImage === "string") {
+      return props.cart.profileImage;
+    } else if (props.cart.profileImage instanceof File) {
+      return URL.createObjectURL(props.cart.profileImage);
+    }
+  }
+  return null;
+});
+
+function saveToLocalStorage() {
+  localStorage.setItem("cartData", JSON.stringify(props.cart));
 }
 </script>
-
-
