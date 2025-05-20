@@ -43,6 +43,10 @@
                 ]"
               />
               <FloatingLabelInput v-model="form.name" label="Name" />
+              <FileUpload
+                accept="image/*"
+                v-model="profileImage"
+              />
 
               <FloatingLabelTextarea
                 v-model="form.description"
