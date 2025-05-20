@@ -24,7 +24,6 @@
     <AddNewModal
       :show="showModal"
       @close="showModal = false"
-      @submit="handleSubmit"
     />
   </div>
 </template>
@@ -48,8 +47,4 @@ const handleFilterApply = (filters) => {
   console.log("Applied filters:", filters);
 };
 
-const handleSubmit = (formData) => {
-  console.log("Form submitted:", formData);
-  showModal.value = false;
-};
 </script>

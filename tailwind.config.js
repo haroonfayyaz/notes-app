@@ -28,7 +28,8 @@ export default {
         DEFAULT: "#F9261A",
         100: "#b3261e1c",
       },
-      baseText: "#070707"
+      baseText: "#070707",
+      success: "#14AE5C"
     },
     fontSize: {
       lg: '22px',

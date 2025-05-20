@@ -1,118 +1,136 @@
 <template>
-  <Transition name="modal">
-    <div
-      v-if="show"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50"
-      @click.self="$emit('close')"
-    >
-      <div
-        class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden"
-      >
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-bold text-gray-900">Add New Item</h2>
-            <button
-              @click="$emit('close')"
-              class="text-gray-400 hover:text-gray-500"
-            >
-              <svg
-                class="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
+  <Modal :show="show" @close="$emit('close')">
+    <template #title> Create New Cart </template>
 
-          <form @submit.prevent="$emit('submit', formData)">
-            <div class="space-y-4">
-              <FloatingLabelSelect
-                v-model="form.type"
-                label="Fruit"
-                :options="[
-                  { label: 'Apple', value: 'apple' },
-                  { label: 'Banana', value: 'banana' },
-                  { label: 'Orange', value: 'orange' },
-                ]"
-              />
-              <FloatingLabelInput v-model="form.name" label="Name" />
-              <FileUpload
-                accept="image/*"
-                v-model="profileImage"
-              />
+    <form @submit.prevent="handleSubmit">
+      <div class="space-y-4">
+        <FloatingLabelSelect
+          v-model="form.type"
+          label="Select type of cart"
+          :options="[
+            { value: 'default', label: 'Default Cart Style' },
+            { value: 'image', label: 'Image Cart Style' },
+            { value: 'checkbox', label: 'Checkbox Cart Style' },
+          ]"
+          required
+        />
+        <FloatingLabelInput v-model="form.name" label="Name" required />
 
-              <FloatingLabelTextarea
-                v-model="form.description"
-                label="Description"
-              />
-            </div>
+        <FileUpload
+          v-if="form.type === 'image'"
+          accept="image/*"
+          v-model="profileImage"
+          required
+        />
 
-            <div class="mt-6 flex justify-end space-x-3">
-              <button
-                type="button"
-                @click="$emit('close')"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-md hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary-500"
-              >
-                Save
-              </button>
-            </div>
-          </form>
-        </div>
+        <!-- Show AddOptions only if type is 'checkbox' -->
+        <AddOptions
+          v-if="form.type === 'checkbox'"
+          label="Product Options"
+          placeholder="Enter option"
+          v-model="productOptions"
+          required
+        />
+
+        <FloatingLabelTextarea
+          v-model="form.description"
+          label="Description"
+          required
+        />
       </div>
-    </div>
-  </Transition>
+
+      <div
+        class="mt-4 pt-4 border-t-2 border-dashed flex justify-end space-x-3"
+      >
+        <button
+          type="submit"
+          class="btn btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+          :disabled="!isFormValid"
+        >
+          <img
+            src="/assets/media/create.svg"
+            height="16"
+            width="16"
+            alt="create doc"
+          />
+          Create
+        </button>
+      </div>
+    </form>
+  </Modal>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch, computed } from "vue";
 
 defineProps({
-  show: {
-    type: Boolean,
-    default: false,
-  },
+  show: Boolean,
 });
+
+const emit = defineEmits(["close", "submit"]);
 
 const form = ref({
   name: "",
   type: "",
   description: "",
 });
-const selectedFruit = ref("");
-defineEmits(["close", "submit"]);
+const profileImage = ref(null);
+const productOptions = ref([""]);
+
+const isFormValid = computed(() => {
+  if (!form.value.name || !form.value.description) {
+    return false;
+  }
+
+  if (form.value.type === "image" && !profileImage.value) {
+    return false;
+  }
+
+  if (
+    form.value.type === "checkbox" &&
+    (productOptions.value.length === 0 ||
+      productOptions.value.some((opt) => !opt.trim()))
+  ) {
+    return false;
+  }
+
+  return true;
+});
+
+watch(
+  () => form.value.type,
+  (newType, oldType) => {
+    if (newType !== oldType) {
+      form.value.name = "";
+      form.value.description = "";
+      profileImage.value = null;
+      productOptions.value = [""];
+    }
+  }
+);
+
+function resetForm() {
+  form.value = {
+    name: "",
+    type: "",
+    description: "",
+  };
+  profileImage.value = null;
+  productOptions.value = [""];
+}
+
+function handleSubmit() {
+  if (!isFormValid.value) return;
+
+  const dataToSubmit = {
+    ...form.value,
+    profileImage: profileImage.value,
+    productOptions: productOptions.value.filter((opt) => opt.trim() !== ""),
+  };
+  console.log("Submitted form data:", dataToSubmit);
+
+  emit("submit", dataToSubmit);
+  resetForm();
+  emit("close");
+}
 </script>
-
-<style scoped>
-.modal-enter-active,
-.modal-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.modal-enter-from,
-.modal-leave-to {
-  opacity: 0;
-}
-
-.modal-enter-active .modal-container,
-.modal-leave-active .modal-container {
-  transition: transform 0.3s ease;
-}
-
-.modal-enter-from .modal-container,
-.modal-leave-to .modal-container {
-  transform: scale(0.95);
-}
-</style>
