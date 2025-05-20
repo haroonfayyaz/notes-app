@@ -62,6 +62,9 @@
 
 <script setup>
 import { ref, watch, computed } from "vue";
+import { useCartStore } from "@/stores/cartStore";
+
+const cartStore = useCartStore();
 
 defineProps({
   show: Boolean,
@@ -124,10 +127,13 @@ function handleSubmit() {
 
   const dataToSubmit = {
     ...form.value,
-    profileImage: profileImage.value,
+    profileImage: profileImage.value
+      ? URL.createObjectURL(profileImage.value)
+      : null,
     productOptions: productOptions.value.filter((opt) => opt.trim() !== ""),
   };
-  console.log("Submitted form data:", dataToSubmit);
+
+  cartStore.addCart(dataToSubmit);
 
   emit("submit", dataToSubmit);
   resetForm();
