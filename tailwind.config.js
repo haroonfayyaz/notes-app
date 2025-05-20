@@ -18,27 +18,31 @@ export default {
     },
     extend: {
       colors: {
-        primary : {
+        primary: {
           DEFAULT: '#007AFF',
           100: 'rgba(0, 122, 255, 0.15)'
         },
         secondary: "#14AE5C",
-      disabled: "#8C929C",
-      danger: {
-        DEFAULT: "#F9261A",
-        100: "#b3261e1c",
+        disabled: "#8C929C",
+        danger: {
+          DEFAULT: "#F9261A",
+          100: "#b3261e1c",
+        },
+        baseText: "#070707",
+        success: "#14AE5C"
       },
-      baseText: "#070707",
-      success: "#14AE5C"
+      fontSize: {
+        lg: '22px',
+        md: "17px",
+        sm: "14px"
+      },
+      lineClamp: {
+        14: '14',
+        12: '12',
+      }
     },
-    fontSize: {
-      lg: '22px',
-      md: "17px",
-      sm: "14px"
-    }
   },
-},
-plugins: [
-],
+  plugins: [
+  ],
 }
 
