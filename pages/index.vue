@@ -24,16 +24,24 @@
   />
 
   <div class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mt-5">
-    <CartCard
-      v-for="(cart, index) in filteredCarts"
-      :key="index"
-      :cart="cart"
-      :index="index"
-      @delete="handleDelete"
-      @edit="handleEdit"
-    />
+    <template v-if="filteredCarts.length > 0">
+      <CartCard
+        v-for="(cart, index) in filteredCarts"
+        :key="index"
+        :cart="cart"
+        :index="index"
+        @delete="handleDelete"
+        @edit="handleEdit"
+      />
+    </template>
+    <template v-else>
+      <p class="col-span-full py-[100px] bg-white rounded-xl text-center text-gray-500 text-lg">
+        No carts found.
+      </p>
+    </template>
   </div>
 </template>
+
 
 <script setup>
 import { ref, computed } from "vue";
