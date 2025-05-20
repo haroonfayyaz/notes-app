@@ -1,6 +1,5 @@
 <template>
   <div class="w-full">
-
     <div v-if="file" class="relative w-full mx-auto">
       <img
         :src="previewUrl"
@@ -8,6 +7,7 @@
         class="w-full rounded-2xl object-cover aspect-[3/1.14]"
       />
       <button
+        type="button"
         @click="removeFile"
         class="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100 transition"
       >
@@ -39,10 +39,16 @@
       }"
     >
       <div class="flex flex-col items-center justify-center">
-        <img src="/assets/media/upload.svg" height="40" width="40" alt="upload" class="mb-4"/>
+        <img
+          src="/assets/media/upload.svg"
+          height="40"
+          width="40"
+          alt="upload"
+          class="mb-4"
+        />
         <p class="text-sm text-baseText">
           <span class="font-medium text-primary">Click to upload</span>
-          or drag and drop <br>SVG, PNG, JPG or GIF
+          or drag and drop <br />SVG, PNG, JPG or GIF
         </p>
       </div>
     </div>
@@ -64,6 +70,10 @@ const props = defineProps({
   accept: {
     type: String,
     default: "image/*",
+  },
+  modelValue: {
+    type: [File, String, null],
+    default: null,
   },
 });
 
@@ -98,18 +108,35 @@ const handleDrop = (e) => {
 };
 
 const removeFile = () => {
-  file.value = null;
-  if (previewUrl.value) {
+  if (previewUrl.value && file.value instanceof File) {
     URL.revokeObjectURL(previewUrl.value);
-    previewUrl.value = null;
   }
+  file.value = null;
+  previewUrl.value = null;
   fileInput.value.value = null;
   emit("update:modelValue", null);
 };
 
 watch(file, (newFile, oldFile) => {
-  if (oldFile && previewUrl.value) {
+  if (oldFile instanceof File && previewUrl.value) {
     URL.revokeObjectURL(previewUrl.value);
   }
 });
+
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    if (newVal instanceof File) {
+      file.value = newVal;
+      previewUrl.value = URL.createObjectURL(newVal);
+    } else if (typeof newVal === "string") {
+      file.value = null;
+      previewUrl.value = newVal;
+    } else {
+      file.value = null;
+      previewUrl.value = null;
+    }
+  },
+  { immediate: true }
+);
 </script>

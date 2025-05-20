@@ -1,6 +1,8 @@
 <template>
   <Modal :show="show" @close="$emit('close')">
-    <template #title> Create New Cart </template>
+    <template #title>
+      {{ editData ? "Edit Cart" : "Create New Cart" }}
+    </template>
 
     <form @submit.prevent="handleSubmit">
       <div class="space-y-4">
@@ -41,35 +43,61 @@
       <div
         class="mt-4 pt-4 border-t-2 border-dashed flex justify-end space-x-3"
       >
-        <button
-          type="submit"
-          class="btn btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
-          :disabled="!isFormValid"
-        >
-          <img
-            src="/assets/media/create.svg"
-            height="16"
-            width="16"
-            alt="create doc"
-          />
-          Create
-        </button>
+        <template v-if="editData">
+          <button
+            @click="showConfirm = true"
+            type="button"
+            class="btn btn-danger w-full"
+          >
+            <img src="/assets/media/trash.svg" height="16" width="16" />
+            Delete
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary w-full"
+            :disabled="!isFormValid"
+          >
+          <img src="/assets/media/save.svg" height="16" width="16" />
+            Save
+          </button>
+        </template>
+
+        <template v-else>
+          <button
+            type="submit"
+            class="btn btn-primary w-full"
+            :disabled="!isFormValid"
+          >
+            <img src="/assets/media/create.svg" height="16" width="16" />
+            Create
+          </button>
+        </template>
       </div>
     </form>
+  </Modal>
+
+  <Modal :show="showConfirm" @close="showConfirm = false">
+    <template #title>Confirm Delete</template>
+    <p>Are you sure you want to delete this cart?</p>
+    <div class="mt-4 flex justify-end gap-3">
+      <button @click="showConfirm = false" class="btn btn-dark">Cancel</button>
+      <button @click="handleDelete" class="btn btn-danger">Delete</button>
+    </div>
   </Modal>
 </template>
 
 <script setup>
 import { ref, watch, computed } from "vue";
-import { useCartStore } from "@/stores/cartStore";
 
 const cartStore = useCartStore();
 
-defineProps({
+const emit = defineEmits(["close", "submit", "delete"]);
+const showConfirm = ref(false);
+const { show, editData } = defineProps({
   show: Boolean,
+  editData: Object,
 });
-
-const emit = defineEmits(["close", "submit"]);
 
 const form = ref({
   name: "",
@@ -100,15 +128,23 @@ const isFormValid = computed(() => {
 });
 
 watch(
-  () => form.value.type,
-  (newType, oldType) => {
-    if (newType !== oldType) {
-      form.value.name = "";
-      form.value.description = "";
-      profileImage.value = null;
-      productOptions.value = [""];
+  () => editData,
+  (newData) => {
+    if (newData) {
+      form.value = {
+        name: newData.name,
+        type: newData.type,
+        description: newData.description,
+      };
+      profileImage.value = newData.profileImage || null;
+      productOptions.value = newData.productOptions
+        ? newData.productOptions.map((opt) => opt.text)
+        : [""];
+    } else {
+      resetForm();
     }
-  }
+  },
+  { immediate: true }
 );
 
 function resetForm() {
@@ -122,29 +158,31 @@ function resetForm() {
 }
 
 function handleSubmit() {
-  if (!form.value.type) {
-    form.value.type = "default";
-  }
-
+  if (!form.value.type) form.value.type = "default";
   if (!isFormValid.value) return;
 
   const dataToSubmit = {
     ...form.value,
-    profileImage: profileImage.value
-      ? URL.createObjectURL(profileImage.value)
-      : null,
+    profileImage: profileImage.value,
     productOptions: productOptions.value
-      .filter((opt) => opt.trim() !== "")
-      .map((opt) => ({
+      .filter((opt) => opt.trim())
+      .map((opt, idx) => ({
         text: opt,
-        checked: false,
+        checked: editData?.productOptions?.[idx]?.checked ?? false,
       })),
   };
-
-  cartStore.addCart(dataToSubmit);
 
   emit("submit", dataToSubmit);
   resetForm();
   emit("close");
 }
+const handleDelete = () => {
+  const index = cartStore.carts.findIndex((c) => c.name === editData.name);
+  if (index !== -1) {
+    cartStore.carts.splice(index, 1);
+    localStorage.setItem("carts", JSON.stringify(cartStore.carts));
+  }
+  showConfirm.value = false;
+  emit("close");
+};
 </script>

@@ -7,7 +7,11 @@
       :key="index"
       class="flex items-center gap-2"
     >
-      <FormInput v-model="options[index]" :placeholder="placeholder"/>
+      <FormInput
+        v-model="options[index]"
+        :placeholder="placeholder"
+        class="flex-1"
+      />
       <button @click="removeOption(index)" type="button">
         <img
           src="/assets/media/remove-option.svg"
@@ -18,19 +22,15 @@
       </button>
     </div>
 
-    <button
-      @click="addOption"
-      type="button"
-      class="btn btn-success w-full"
-    >
-      <img src="/assets/media/charm_plus.svg" height="16" width="16"/>
+    <button @click="addOption" type="button" class="btn btn-success w-full">
+      <img src="/assets/media/charm_plus.svg" height="16" width="16" />
       Add option
     </button>
   </div>
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { computed } from "vue";
 
 const props = defineProps({
   label: {
@@ -49,32 +49,24 @@ const props = defineProps({
 
 const emit = defineEmits(["update:modelValue"]);
 
-const options = ref([...props.modelValue]);
+const options = computed({
+  get() {
+    return props.modelValue;
+  },
+  set(val) {
+    emit("update:modelValue", val);
+  },
+});
 
 const addOption = () => {
-  options.value.push("");
-  emitOptions();
+  options.value = [...options.value, ""];
 };
 
 const removeOption = (index) => {
   if (options.value.length > 1) {
-    options.value.splice(index, 1);
-    emitOptions();
+    const updated = [...options.value];
+    updated.splice(index, 1);
+    options.value = updated;
   }
 };
-
-const emitOptions = () => {
-  emit(
-    "update:modelValue",
-    options.value.filter((opt) => opt.trim() !== "")
-  );
-};
-
-watch(
-  options,
-  (newVal) => {
-    emitOptions();
-  },
-  { deep: true }
-);
 </script>
