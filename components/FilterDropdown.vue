@@ -31,7 +31,7 @@
               type="checkbox"
               :checked="isSelected(option.value)"
               class="h-4 w-4 text-primary-600 rounded border-gray-300 focus:ring-primary-500 mr-3"
-              @click.stop
+             
             />
             <span class="text-sm text-gray-700">{{ option.label }}</span>
           </div>

@@ -23,7 +23,6 @@
           required
         />
 
-        <!-- Show AddOptions only if type is 'checkbox' -->
         <AddOptions
           v-if="form.type === 'checkbox'"
           label="Product Options"
@@ -123,6 +122,10 @@ function resetForm() {
 }
 
 function handleSubmit() {
+  if (!form.value.type) {
+    form.value.type = "default";
+  }
+
   if (!isFormValid.value) return;
 
   const dataToSubmit = {
@@ -130,7 +133,12 @@ function handleSubmit() {
     profileImage: profileImage.value
       ? URL.createObjectURL(profileImage.value)
       : null,
-    productOptions: productOptions.value.filter((opt) => opt.trim() !== ""),
+    productOptions: productOptions.value
+      .filter((opt) => opt.trim() !== "")
+      .map((opt) => ({
+        text: opt,
+        checked: false,
+      })),
   };
 
   cartStore.addCart(dataToSubmit);

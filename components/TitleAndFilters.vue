@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center justify-between">
+  <div class="flex items-center justify-between w-full">
     <h1 class="text-lg font-bold">Title</h1>
     <div class="flex gap-4 items-center">
       <FilterDropdown
@@ -10,41 +10,28 @@
         :show-action-buttons="false"
         @apply="handleFilterApply"
       />
-      <button class="btn btn-primary" @click="showModal = true">
-        <img
-          src="/assets/media/charm_plus.svg"
-          height="16"
-          width="16"
-          alt="plus"
-        />
-        Add New
-      </button>
+      <slot/>
     </div>
-
-    <AddNewModal
-      :show="showModal"
-      @close="showModal = false"
-    />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from "vue";
 import FilterDropdown from "./FilterDropdown.vue";
-import AddNewModal from "./AddNewModal.vue";
+
+const emit = defineEmits(["filter-change"]);
 
 const filterOptions = [
   { value: "all", label: "All" },
-  { value: "type_1", label: "Type 1" },
-  { value: "type_2", label: "Type 2" },
-  { value: "type_3", label: "Type 3" },
+  { value: "default", label: "Default" },
+  { value: "image", label: "Image" },
+  { value: "checkbox", label: "Checkbox" },
 ];
 
 const selectedFilters = ref([]);
-const showModal = ref(false);
 
-const handleFilterApply = (filters) => {
-  console.log("Applied filters:", filters);
-};
-
+watch(selectedFilters, (newVal) => {
+  emit("filter-change", newVal);
+});
 </script>
+
