@@ -10,7 +10,7 @@
         :show-action-buttons="false"
         @apply="handleFilterApply"
       />
-      <button class="btn btn-primary">
+      <button class="btn btn-primary" @click="showModal = true">
         <img
           src="/assets/media/charm_plus.svg"
           height="16"
@@ -20,11 +20,19 @@
         Add New
       </button>
     </div>
+
+    <AddNewModal
+      :show="showModal"
+      @close="showModal = false"
+      @submit="handleSubmit"
+    />
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue';
 import FilterDropdown from "./FilterDropdown.vue";
+import AddNewModal from "./AddNewModal.vue";
 
 const filterOptions = [
   { value: "all", label: "All" },
@@ -34,8 +42,14 @@ const filterOptions = [
 ];
 
 const selectedFilters = ref([]);
+const showModal = ref(false);
 
 const handleFilterApply = (filters) => {
   console.log("Applied filters:", filters);
+};
+
+const handleSubmit = (formData) => {
+  console.log("Form submitted:", formData);
+  showModal.value = false;
 };
 </script>

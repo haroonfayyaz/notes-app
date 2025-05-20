@@ -1,5 +1,5 @@
 <template>
   <div class="py-4">
-    <TitleAndFilters/>
+    <TitleAndFilters />
   </div>
 </template>
