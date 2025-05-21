@@ -3,7 +3,7 @@
     <div class="pb-5 max-h-full overflow-scroll relative">
       <div class="flex justify-between items-center mb-5 sticky top-0 bg-white">
         <h2 class="font-bold text-lg line-clamp-1">{{ cart.name }}</h2>
-        <div class="flex gap-2 ms-4">
+        <div class="flex items-center gap-2 ms-4">
           <router-link :to="`/note/${index}`">
             <img
               src="/assets/media/view.svg"
@@ -13,7 +13,12 @@
             />
           </router-link>
           <button @click="$emit('edit', index)">
-            EDIt
+            <img
+              src="/assets/media/pencil-square.svg"
+              height="24"
+              width="24"
+              class="min-w-5"
+            />
           </button>
         </div>
       </div>
