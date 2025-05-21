@@ -1,75 +1,73 @@
-# Nuxt Minimal Starter
+# Notes App
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A simple notes/cart management application built with [Nuxt 3](https://nuxt.com/), [Vue 3](https://vuejs.org/), [Pinia](https://pinia.vuejs.org/), and [Tailwind CSS](https://tailwindcss.com/).
+
+## Features
+
+- Create, edit, and delete carts/notes with different styles:
+  - Default
+  - Image
+  - Checkbox (with options)
+- Filter carts by type
+- Upload and preview images
+- Responsive and modern UI
+- State management with Pinia
+- Data persistence via `localStorage`
+
+## Project Structure
+
+```
+assets/         # CSS and media assets
+components/     # Vue components (modals, inputs, cards, etc.)
+layouts/        # Nuxt layouts
+pages/          # Application pages (index, note details)
+public/         # Static files (favicon, robots.txt)
+stores/         # Pinia stores (cartStore)
+```
 
 ## Setup
 
-Make sure to install dependencies:
+Install dependencies:
 
 ```bash
-# npm
 npm install
-
-# pnpm
-pnpm install
-
-# yarn
+# or
 yarn install
-
-# bun
-bun install
+# or
+pnpm install
 ```
 
-## Development Server
+## Development
 
-Start the development server on `http://localhost:3000`:
+Start the development server:
 
 ```bash
-# npm
 npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+Visit [http://localhost:3000](http://localhost:3000) to view the app.
 
-Build the application for production:
+## Build
+
+Build for production:
 
 ```bash
-# npm
 npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
-Locally preview production build:
+Preview the production build:
 
 ```bash
-# npm
 npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+## Technologies Used
+
+- [Nuxt 3](https://nuxt.com/)
+- [Vue 3](https://vuejs.org/)
+- [Pinia](https://pinia.vuejs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+
+## License
+
+MIT
